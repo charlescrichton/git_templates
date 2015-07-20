@@ -1,0 +1,38 @@
+#!/bin/sh
+#
+# An example hook script to check the commit log message.
+# Called by "git commit" with one argument, the name of the file
+# that has the commit message.  The hook should exit with non-zero
+# status after issuing an appropriate message if it wants to stop the
+# commit.  The hook is allowed to edit the commit message file.
+#
+# To enable this hook, rename this file to "commit-msg".
+
+# Uncomment the below to add a Signed-off-by line to the message.
+# Doing this in a hook is a bad idea in general, but the prepare-commit-msg
+# hook is more suited to it.
+#
+# SOB=$(git var GIT_AUTHOR_IDENT | sed -n 's/^\(.*>\).*$/Signed-off-by: \1/p')
+# grep -qs "^$SOB" "$1" || echo "$SOB" >> "$1"
+
+# This example catches duplicate Signed-off-by lines.
+
+#test "" = "$(grep '^Signed-off-by: ' "$1" |
+#	 sort | uniq -c | sed -e '/^[ 	]*1[ 	]/d')" || {
+#	echo >&2 Duplicate Signed-off-by lines.
+#	exit 1
+#}
+
+#Based upon: https://gist.github.com/gfontenot/2976099
+
+msg=`cat $PWD/.git/COMMIT_EDITMSG`
+_pwd=`echo $PWD | sed -e "s/.*\///"`
+_commit=`git rev-parse --short HEAD`
+_branch=`git name-rev HEAD 2> /dev/null | sed 's#HEAD\ \(.*\)#\1#' `
+
+_files=`git diff --cached --name-status | sed 's#[[:space:]]\{1,\}# #g' | sed 's#\(.*\) \(.*\)#\* \`\2\` \1#g' | sed 's#\` A#\` Added#' | sed 's#\` M#\` Modified#' | sed 's#\` D#\` Deleted#' | sed 's#\` C.*#\` Copied file#' | sed 's#\` R.*#\` Renamed#' | sed 's#\` T#\` Type changed#' | sed 's#\` U#\` Unmerged file#' | sed 's#\` X#\` Unknown#'`
+
+echo "Add commit message to Day One journal"
+# Edit this line with the path to your logging script
+echo "# Commit to $_pwd _($_commit@$_branch)_\n\n$msg\n\n## Files\nFull path: \`$PWD\`\n\n$_files\n"  | /usr/local/bin/dayone new
+

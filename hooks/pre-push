@@ -1,0 +1,12 @@
+#!/bin/sh
+#
+# $1 branch pushing to
+# $2 URL pushing to
+
+_repo=`git rev-parse --show-toplevel`
+_pwd=`echo $PWD | sed -e "s/.*\///"`
+_commit=`git rev-parse --short HEAD`
+_branch=`git name-rev HEAD 2> /dev/null | sed 's#HEAD\ \(.*\)#\1#' `
+
+# Edit this line with the path to your logging script
+echo "# Attempt push from $_pwd to $2\n\tRemote branch: $1/$_branch\n\tLocal Commit: $_commit\n\tLocal Branch: $_branch\n\tLocal path: $_repo\n\n_This push may or may not have actually happened - this is a log of the command being issued, not the result._" | /usr/local/bin/dayone new
