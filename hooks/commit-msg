@@ -25,14 +25,16 @@
 
 #Based upon: https://gist.github.com/gfontenot/2976099
 
-msg=`cat $PWD/.git/COMMIT_EDITMSG`
+msg=`cat $PWD/.git/COMMIT_EDITMSG | sed -n '2,$p'`
+headmsg=`head -n 1 $PWD/.git/COMMIT_EDITMSG`
+
 _pwd=`echo $PWD | sed -e "s/.*\///"`
 _commit=`git rev-parse --short HEAD`
 _branch=`git name-rev HEAD 2> /dev/null | sed 's#HEAD\ \(.*\)#\1#' `
 
-_files=`git diff --cached --name-status | sed 's#[[:space:]]\{1,\}# #g' | sed 's#\(.*\) \(.*\)#\* \`\2\` \1#g' | sed 's#\` A#\` Added#' | sed 's#\` M#\` Modified#' | sed 's#\` D#\` Deleted#' | sed 's#\` C.*#\` Copied file#' | sed 's#\` R.*#\` Renamed#' | sed 's#\` T#\` Type changed#' | sed 's#\` U#\` Unmerged file#' | sed 's#\` X#\` Unknown#'`
+_files=`git diff --cached --name-status | sed 's#[[:space:]]\{1,\}# #g' | sed 's#\(.*\) \(.*\)#\\\\t* \`\2\` \1#g' | sed 's#\` A#\` Added#' | sed 's#\` M#\` Modified#' | sed 's#\` D#\` Deleted#' | sed 's#\` C.*#\` Copied file#' | sed 's#\` R.*#\` Renamed#' | sed 's#\` T#\` Type changed#' | sed 's#\` U#\` Unmerged file#' | sed 's#\` X#\` Unknown#'`
 
 echo "Add commit message to Day One journal"
 # Edit this line with the path to your logging script
-echo "# Commit to $_pwd _($_commit@$_branch)_\n\n$msg\n\n## Files\nFull path: \`$PWD\`\n\n$_files\n"  | /usr/local/bin/dayone new
+echo "# Commit to ${_pwd}: $headmsg\n\n$msg\n\n## Metadata\n* Commit: $_commit\n* Branch: $_branch\n\n## Files\n* Full path: \`$PWD\`\n\n$_files\n"  | /usr/local/bin/dayone new
 
