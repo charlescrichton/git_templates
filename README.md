@@ -1,6 +1,6 @@
 # git_templates
 
-The git templates directory. Usually hosted at ~/.git_template. 
+The git templates directory. Usually hosted at `~/.git_template`. 
 
 This is used whenever `git init` is issued.
 
@@ -14,20 +14,21 @@ This is used whenever `git init` is issued.
 * Install DayOne-CLI. See http://dayoneapp.com/tools/cli-man/
 * Clone this repo:
 
-	``` sh
+```shell
 git clone https://github.com/charlescrichton/git_templates.git ~/.git_templates
-	```
+```
+
 * Set git to use the templates:
 
-	``` sh
-git	 config --global init.templatedir '~/.git_templates'
-	```
+```shell
+git config --global init.templatedir '~/.git_templates'
+```
 
 ## Existing git repositories
 
 To add this to an existing git repository simply call
 
-``` sh
+```shell
 git init
 ```
 
